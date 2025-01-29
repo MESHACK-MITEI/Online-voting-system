@@ -1,0 +1,113 @@
+CREATE TABLE signup (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    id_number VARCHAR(20) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+
+-- Table for County
+CREATE TABLE County (
+    county_id INT PRIMARY KEY,
+    county_name VARCHAR(255),
+   );
+
+-- Table for Subcounty
+CREATE TABLE Subcounty (
+    subcounty_id INT PRIMARY KEY,
+    subcounty_name VARCHAR(255),
+    county_id INT,
+    FOREIGN KEY (county_id) REFERENCES County(county_id)
+);
+
+-- Table for Ward
+CREATE TABLE Ward (
+    ward_id INT PRIMARY KEY,
+    ward_name VARCHAR(255),
+    county_id INT,
+    FOREIGN KEY (county_id) REFERENCES County(county_id)
+);
+CREATE TABLE President (
+    president_id INT PRIMARY KEY,
+    name VARCHAR(255),
+    party_affiliation VARCHAR(255)
+);
+
+-- Table for Governor
+CREATE TABLE Governor (
+    governor_id INT PRIMARY KEY,
+    name VARCHAR(255),
+    party_affiliation VARCHAR(255),
+    county_id INT,
+    vote_count INT DEFAULT 0,
+    FOREIGN KEY (county_id) REFERENCES County(county_id)
+);
+
+-- Table for Senator
+CREATE TABLE Senator (
+    senator_id INT PRIMARY KEY,
+    name VARCHAR(255),
+    party_affiliation VARCHAR(255),
+    county_id INT,
+    vote_count INT DEFAULT 0,
+    FOREIGN KEY (county_id) REFERENCES County(county_id)
+);
+
+-- Table for Woman Representative
+CREATE TABLE WomanRep (
+    womanrep_id INT PRIMARY KEY,
+    name VARCHAR(255),
+    party_affiliation VARCHAR(255),
+    county_id INT,
+    vote_count INT DEFAULT 0,
+    FOREIGN KEY (county_id) REFERENCES County(county_id)
+);
+
+-- Table for Votes
+CREATE TABLE Votes (
+    vote_id INT PRIMARY KEY,
+    id_number INT, 
+    president_id INT,
+    governor_id INT,
+    senator_id INT,
+    womanrep_id INT,
+    county_id INT,
+    subcounty_id INT,
+    ward_id INT,
+    vote_timestamp TIMESTAMP,
+    FOREIGN KEY (id_number) REFERENCES signup(id_number),  
+    FOREIGN KEY (president_id) REFERENCES President(president_id),
+    FOREIGN KEY (governor_id) REFERENCES Governor(governor_id),
+    FOREIGN KEY (senator_id) REFERENCES Senator(senator_id),
+    FOREIGN KEY (womanrep_id) REFERENCES WomanRep(womanrep_id),
+    FOREIGN KEY (county_id) REFERENCES County(county_id),
+    FOREIGN KEY (subcounty_id) REFERENCES Subcounty(subcounty_id),
+    FOREIGN KEY (ward_id) REFERENCES Ward(ward_id)
+);
+ --query
+
+CREATE TABLE queries (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+--v.status
+CREATE TABLE voted_status (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_email VARCHAR(255) UNIQUE,
+    voted_president BOOLEAN DEFAULT 0,
+    voted_governor BOOLEAN DEFAULT 0,
+    voted_senator BOOLEAN DEFAULT 0,
+    voted_representative BOOLEAN DEFAULT 0,
+    voted_mp BOOLEAN DEFAULT 0,
+    voted_mca BOOLEAN DEFAULT 0
+);
+ALTER TABLE signup
+  ADD `reset_token_hash` VARCHAR(64) NULL DEFAULT NULL,
+  ADD `reset_token_expires_at` DATETIME NULL DEFAULT NULL,
+  ADD UNIQUE (`reset_token_hash`);
+
+
+
